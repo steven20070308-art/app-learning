@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Good Morning, World</title>
+<style>
+:root{
+  --sky-top:#ffd9a8; --sky-bot:#fff4e0; --celestial:#ff9a3c; --ink:#3a2a1c; --hill:#7fae7a; --hill2:#5f9461;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+:root[data-mode="night"]{
+  --sky-top:#0d1424; --sky-bot:#1f2847; --celestial:#e2e8f0; --ink:#e2e8f0; --hill:#1b2e2b; --hill2:#12201e;
+}
+html{height:100%;scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;height:100%;overflow:hidden;color:var(--ink);
+  background:linear-gradient(var(--sky-top),var(--sky-bot));
+  font-family:"Noto Serif TC","Songti TC",Georgia,serif;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;position:relative;
+  transition:background 0.8s ease, color 0.8s ease}
+.celestial{position:absolute;left:50%;bottom:22%;width:clamp(120px,26vmin,240px);aspect-ratio:1;border-radius:50%;
+  background:var(--celestial);transform:translate(-50%,40%);animation:rise 3s cubic-bezier(.2,.8,.2,1) forwards;
+  transition:background 0.8s ease, box-shadow 0.8s ease}
+:root[data-mode="night"] .celestial{
+  box-shadow: 0 0 45px rgba(226, 232, 240, 0.45);
+}
+@keyframes rise{to{transform:translate(-50%,-110%)}}
+h1{position:relative;margin:0;font-size:clamp(2.4rem,9vw,5.5rem);font-weight:700;letter-spacing:.02em;line-height:1.1}
+p{position:relative;margin:1rem 0 0;font-size:clamp(1rem,2.6vw,1.4rem);opacity:.85}
+#clock{font-variant-numeric:tabular-nums}
+.hills{position:absolute;left:0;right:0;bottom:0;width:100%;height:30%}
+.hills path{transition:fill 0.8s ease}
+.btn-group{display:flex;gap:0.8rem;margin-top:1.5rem;flex-wrap:wrap;justify-content:center}
+button{position:relative;padding:.7rem 1.4rem;font:inherit;color:var(--ink);background:transparent;
+  border:2px solid var(--ink);border-radius:999px;cursor:pointer;transition:all 0.2s ease}
+button:hover{background:var(--ink);color:var(--sky-bot)}
+button:focus-visible{outline:3px solid var(--celestial);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){.celestial{animation:none;transform:translate(-50%,-110%)}}
+</style>
+</head>
+<body>
+<div class="celestial" id="celestial" aria-hidden="true"></div>
+<h1 id="title">Good Morning, World</h1>
+<p id="msg">早安,世界!</p>
+<p id="clock"></p>
+<div class="btn-group">
+  <button id="btn" type="button">換一句早安</button>
+  <button id="toggle-mode" type="button">切換夜晚 🌙</button>
+</div>
+<svg class="hills" viewBox="0 0 800 200" preserveAspectRatio="none" aria-hidden="true">
+  <path d="M0 120 Q200 40 400 110 T800 90 V200 H0Z" fill="var(--hill2)"/>
+  <path d="M0 160 Q220 90 440 150 T800 140 V200 H0Z" fill="var(--hill)"/>
+</svg>
+<script>
+const data = {
+  day: {
+    title: "Good Morning, World",
+    btnText: "換一句早安",
+    toggleText: "切換夜晚 🌙",
+    greetings: [
+      "早安,世界!",
+      "Good morning, world!",
+      "おはよう、世界!",
+      "Buenos días, mundo!",
+      "Bonjour, le monde !",
+      "좋은 아침, 세계!",
+      "!صباح الخير يا عالم"
+    ]
+  },
+  night: {
+    title: "Good Night, World",
+    btnText: "換一句晚安",
+    toggleText: "切換白天 ☀️",
+    greetings: [
+      "晚安,世界!",
+      "Good night, world!",
+      "おやすみなさい、世界!",
+      "Buenas noches, mundo!",
+      "Bonne nuit, le monde !",
+      "안녕히 주무세요, 세계!",
+      "!تصبح على خير يا عالم"
+    ]
+  }
+};
+
+let currentMode = "day";
+let i = 0;
+
+const titleEl = document.getElementById("title");
+const msgEl = document.getElementById("msg");
+const btnEl = document.getElementById("btn");
+const toggleBtnEl = document.getElementById("toggle-mode");
+const celestialEl = document.getElementById("celestial");
+
+function setMode(mode) {
+  currentMode = mode;
+  i = 0;
+  if (currentMode === "night") {
+    document.documentElement.setAttribute("data-mode", "night");
+  } else {
+    document.documentElement.removeAttribute("data-mode");
+  }
+  document.title = data[currentMode].title;
+  titleEl.textContent = data[currentMode].title;
+  btnEl.textContent = data[currentMode].btnText;
+  toggleBtnEl.textContent = data[currentMode].toggleText;
+  msgEl.textContent = data[currentMode].greetings[i];
+
+  // 重播日月升起動畫
+  celestialEl.style.animation = "none";
+  celestialEl.offsetHeight; // 觸發重繪
+  celestialEl.style.animation = "";
+}
+
+btnEl.addEventListener("click", () => {
+  const list = data[currentMode].greetings;
+  i = (i + 1) % list.length;
+  msgEl.textContent = list[i];
+});
+
+toggleBtnEl.addEventListener("click", () => {
+  setMode(currentMode === "day" ? "night" : "day");
+});
+
+function tick() {
+  document.getElementById("clock").textContent = new Date().toLocaleTimeString("zh-TW", {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+}
+tick();
+setInterval(tick, 1000);
+</script>
+</body>
+</html>
