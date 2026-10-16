@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html lang="ru">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -71,7 +71,8 @@ const data = {
       "Buenos días, mundo!",
       "Bonjour, le monde !",
       "좋은 아침, 세계!",
-      "!صباح الخير يا عالم"
+      "!صباح الخير يا عالم",
+      "Доброе утро, мир!"
     ]
   },
   night: {
@@ -85,7 +86,8 @@ const data = {
       "Buenas noches, mundo!",
       "Bonne nuit, le monde !",
       "안녕히 주무세요, 세계!",
-      "!تصبح على خير يا عالم"
+      "!تصبح على خير يا عالم",
+      "Спокойной ночи, мир!"
     ]
   }
 };
@@ -130,7 +132,7 @@ toggleBtnEl.addEventListener("click", () => {
 });
 
 function tick() {
-  document.getElementById("clock").textContent = new Date().toLocaleTimeString("zh-TW", {hour: "2-digit", minute: "2-digit", second: "2-digit"});
+  document.getElementById("clock").textContent = new Date().toLocaleTimeString("ru-RU", {hour: "2-digit", minute: "2-digit", second: "2-digit"});
 }
 tick();
 setInterval(tick, 1000);
