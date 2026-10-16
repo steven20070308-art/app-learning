@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#173b2b">
+  <title>Steven 的行程</title>
+  <link rel="preconnect" href="https://images.unsplash.com">
+  <style>
+    :root{font-family:"Noto Sans TC","Microsoft JhengHei",sans-serif;color:#28352d;background:#f4f5ee;--green:#315d43;--muted:#788078;--line:#e8ebe3}
+    *{box-sizing:border-box}body{margin:0;min-height:100vh;background:#f4f5ee}.hero{min-height:300px;padding:54px max(7vw,24px) 100px;background:linear-gradient(90deg,rgba(16,43,30,.72),rgba(24,53,36,.22)),url("https://images.unsplash.com/photo-1448375240586-882707db888b?auto=format&fit=crop&w=2000&q=85") center 48%/cover;color:white}.hero-inner{max-width:1040px;margin:auto}.eyebrow{margin:0 0 12px;color:#e0eadf;font-size:12px;font-weight:600;letter-spacing:.2em}.hero h1{margin:0;font-size:clamp(34px,6vw,52px);font-weight:600;letter-spacing:.04em}.hero p:last-child{margin:12px 0 0;color:#edf2ea;font-size:14px}.container{position:relative;max-width:1040px;margin:-56px auto 0;padding:0 22px 56px}.dashboard{display:grid;grid-template-columns:1.1fr .9fr;gap:20px;align-items:start}.card{padding:25px 26px;background:#fff;border:1px solid rgba(54,81,58,.08);border-radius:15px;box-shadow:0 12px 36px rgba(35,53,38,.07)}.card h2{margin:0;font-size:18px;font-weight:600}.section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:18px}.subtle{color:var(--muted);font-size:12px}.appointment-list,.todo-list{display:grid;gap:11px}.appointment{display:flex;align-items:center;gap:14px;padding:14px 15px;border:1px solid var(--line);border-radius:10px;background:#fff}.date-badge{display:grid;min-width:56px;place-items:center;gap:1px;padding:7px 5px;border-radius:9px;background:#edf2e9;color:var(--green)}.date-badge strong{font-size:18px;line-height:1.2}.date-badge span{font-size:10px}.event-info{min-width:0;flex:1}.event-info strong{display:block;font-size:14px;font-weight:500}.event-info span{display:block;margin-top:3px;color:var(--muted);font-size:12px}.event-time{color:#6e786e;font-size:12px;white-space:nowrap}.todo{display:flex;align-items:center;gap:12px;padding:13px 12px;border:1px solid var(--line);border-radius:10px}.todo input[type=checkbox]{width:17px;height:17px;margin:0;accent-color:var(--green);cursor:pointer}.todo label{flex:1;font-size:13px;cursor:pointer}.todo.done label{color:#9ba199;text-decoration:line-through}.todo select{max-width:105px;padding:6px 24px 6px 8px;border:1px solid var(--line);border-radius:7px;background:#fff;color:#59645b;font:inherit;font-size:11px}.add-card{grid-column:1/-1;padding:21px 25px}.add-card .section-head{margin-bottom:15px}.form-row{display:grid;grid-template-columns:1.35fr 1fr 1fr 1fr auto;gap:10px}.form-row input{width:100%;min-width:0;height:41px;padding:0 11px;border:1px solid #e2e7dd;border-radius:8px;background:white;color:#38433a;font:inherit;font-size:12px;outline:none}.form-row input:focus,.todo select:focus{border-color:#8da48c;box-shadow:0 0 0 3px rgba(90,124,87,.1)}button{height:41px;padding:0 17px;border:0;border-radius:8px;background:var(--green);color:white;font:inherit;font-size:12px;cursor:pointer;transition:background .2s,transform .2s}button:hover{background:#234a34;transform:translateY(-1px)}.delete-button{width:30px;height:30px;padding:0;background:transparent;color:#99a097;font-size:17px}.delete-button:hover{transform:none;background:#f4efec;color:#9b5648}.empty{padding:22px 12px;color:var(--muted);font-size:13px;text-align:center}.footer{padding-top:17px;color:#899087;font-size:11px;text-align:center}
+    @media(max-width:700px){.hero{min-height:265px;padding-top:43px}.container{padding:0 14px 38px}.dashboard{grid-template-columns:1fr;gap:14px}.add-card{grid-column:auto}.card{padding:21px 18px}.form-row{grid-template-columns:1fr 1fr}.form-row input:first-child,.form-row button{grid-column:1/-1}.event-time{font-size:11px}}
+    @media(max-width:390px){.todo{gap:8px}.todo select{max-width:94px}.appointment{gap:10px;padding:12px}.event-info strong{font-size:13px}}
+  </style>
+</head>
+<body>
+  <header class="hero"><div class="hero-inner"><p class="eyebrow">MY LITTLE PLANNER</p><h1>Steven 的行程</h1><p id="today-label">把每一天，安排得剛剛好。</p></div></header>
+  <main class="container">
+    <div class="dashboard">
+      <section class="card" aria-labelledby="appointments-heading"><div class="section-head"><h2 id="appointments-heading">近期行程</h2><span class="subtle">預設 3 筆 · 新增會自動儲存</span></div><div class="appointment-list" id="appointment-list"></div></section>
+      <section class="card" aria-labelledby="todos-heading"><div class="section-head"><h2 id="todos-heading">待辦事項</h2><span class="subtle">點選核取方塊完成</span></div><div class="todo-list" id="todo-list"></div></section>
+      <section class="card add-card" aria-labelledby="add-heading"><div class="section-head"><h2 id="add-heading">新增行程</h2><span class="subtle">安排一件期待的小事</span></div>
+        <form id="appointment-form" class="form-row"><input name="title" type="text" placeholder="行程名稱" aria-label="行程名稱" required maxlength="50"><input name="date" type="date" aria-label="日期" required><input name="time" type="time" aria-label="時間" required><input name="place" type="text" placeholder="地點（選填）" aria-label="地點（選填）" maxlength="40"><button type="submit">＋ 新增行程</button></form>
+      </section>
+    </div>
+    <footer class="footer">慢慢走，也記得留一點時間給自己 🌿</footer>
+  </main>
+
+  <script>
+    (() => {
+      const APPOINTMENTS_KEY = 'steven-planner-appointments-v1';
+      const TODOS_KEY = 'steven-planner-todos-v1';
+      const initialAppointments = [
+        { id: 'seed-1', title: '晨間散步', date: '2026-10-17', time: '08:00', place: '河濱公園' },
+        { id: 'seed-2', title: '和朋友喝咖啡', date: '2026-10-18', time: '14:30', place: '森林系咖啡館' },
+        { id: 'seed-3', title: '閱讀與放空', date: '2026-10-20', time: '16:00', place: '家裡陽台' }
+      ];
+      const initialTodos = [
+        { id: 'todo-1', title: '整理本週行程', status: '進行中' },
+        { id: 'todo-2', title: '準備出門要帶的東西', status: '尚未開始' },
+        { id: 'todo-3', title: '留半小時給自己休息', status: '尚未開始' }
+      ];
+      const readStorage = (key, fallback) => {
+        try { const saved = localStorage.getItem(key); return saved ? JSON.parse(saved) : fallback; }
+        catch { return fallback; }
+      };
+      let appointments = readStorage(APPOINTMENTS_KEY, initialAppointments);
+      let todos = readStorage(TODOS_KEY, initialTodos);
+      const appointmentList = document.querySelector('#appointment-list');
+      const todoList = document.querySelector('#todo-list');
+      const escapeHTML = value => String(value).replace(/[&<>"']/g, char => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' })[char]);
+      const prettyDate = value => {
+        const date = new Date(`${value}T00:00:00`);
+        if (Number.isNaN(date.getTime())) return { month: '—', day: '—', weekday: '' };
+        return { month: new Intl.DateTimeFormat('zh-TW', { month: 'short' }).format(date), day: String(date.getDate()).padStart(2, '0'), weekday: new Intl.DateTimeFormat('zh-TW', { weekday: 'short' }).format(date) };
+      };
+      document.querySelector('#today-label').textContent = `${new Intl.DateTimeFormat('zh-TW', { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }).format(new Date())}　把每一天，安排得剛剛好。`;
+      function renderAppointments() {
+        appointments.sort((a, b) => `${a.date}T${a.time}`.localeCompare(`${b.date}T${b.time}`));
+        appointmentList.innerHTML = appointments.length ? appointments.map(item => {
+          const date = prettyDate(item.date);
+          return `<article class="appointment"><div class="date-badge"><strong>${escapeHTML(date.day)}</strong><span>${escapeHTML(date.month)} · ${escapeHTML(date.weekday)}</span></div><div class="event-info"><strong>${escapeHTML(item.title)}</strong><span>${escapeHTML(item.place || '未填寫地點')}</span></div><time class="event-time">${escapeHTML(item.time)}</time>${item.id.startsWith('seed-') ? '' : `<button class="delete-button" type="button" data-delete="${escapeHTML(item.id)}" aria-label="刪除 ${escapeHTML(item.title)}" title="刪除行程">×</button>`}</article>`;
+        }).join('') : '<p class="empty">還沒有行程，新增一筆安排吧。</p>';
+        localStorage.setItem(APPOINTMENTS_KEY, JSON.stringify(appointments));
+      }
+      function renderTodos() {
+        todoList.innerHTML = todos.map(item => `<div class="todo${item.status === '已完成' ? ' done' : ''}"><input type="checkbox" id="${escapeHTML(item.id)}" data-check="${escapeHTML(item.id)}" ${item.status === '已完成' ? 'checked' : ''} aria-label="標記 ${escapeHTML(item.title)} 為完成"><label for="${escapeHTML(item.id)}">${escapeHTML(item.title)}</label><select data-status="${escapeHTML(item.id)}" aria-label="${escapeHTML(item.title)} 的狀態">${['尚未開始', '進行中', '已完成'].map(status => `<option value="${status}" ${item.status === status ? 'selected' : ''}>${status}</option>`).join('')}</select></div>`).join('');
+        localStorage.setItem(TODOS_KEY, JSON.stringify(todos));
+      }
+      appointmentList.addEventListener('click', event => {
+        const button = event.target.closest('[data-delete]');
+        if (!button) return;
+        appointments = appointments.filter(item => item.id !== button.dataset.delete);
+        renderAppointments();
+      });
+      todoList.addEventListener('change', event => {
+        const checkbox = event.target.closest('[data-check]');
+        const select = event.target.closest('[data-status]');
+        const item = todos.find(todo => todo.id === (checkbox?.dataset.check || select?.dataset.status));
+        if (!item) return;
+        item.status = checkbox ? (checkbox.checked ? '已完成' : '尚未開始') : select.value;
+        renderTodos();
+      });
+      document.querySelector('#appointment-form').addEventListener('submit', event => {
+        event.preventDefault();
+        const form = event.currentTarget;
+        const data = new FormData(form);
+        appointments.push({ id: `custom-${Date.now()}-${Math.random().toString(36).slice(2, 7)}`, title: String(data.get('title')).trim(), date: String(data.get('date')), time: String(data.get('time')), place: String(data.get('place')).trim() });
+        renderAppointments();
+        form.reset();
+        form.querySelector('[name="title"]').focus();
+      });
+      renderAppointments();
+      renderTodos();
+    })();
+  </script>
+</body>
+</html>
